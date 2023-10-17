@@ -5,6 +5,7 @@ import { Slot, SplashScreen, Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useColorScheme } from 'react-native';
 import { SessionProvider } from '../services/authContext';
+import { en, registerTranslation } from 'react-native-paper-dates'
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -20,6 +21,9 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  // For react native paper components
+  registerTranslation('en', en);
+
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,

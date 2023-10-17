@@ -69,15 +69,16 @@ export default function LoginPage() {
               />
 
               <CustomButton onPress={(e) => handleSubmit()} text="LOG IN" />
-              <CustomButton type="link" onPress={() => setPwdForgotten(true)} text="Forgot password?" />
+              {/* For future developments */}
+              {/* <CustomButton type="link" onPress={() => setPwdForgotten(true)} text="Forgot password?" /> */}
             </KeyboardAwareScrollView>
           )}
         </Formik>
       </SafeAreaView>
-
+{/* For future developments:
       <ModalComponent onClose={() => setPwdForgotten(false)} title="Password reset" show={pwdForgotten}>
         <PasswordForgotten />
-      </ModalComponent>
+      </ModalComponent> */}
 
     </>
   );

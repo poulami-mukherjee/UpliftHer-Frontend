@@ -1,49 +1,29 @@
 import { Text, View } from "react-native";
 import { ErrorMessage } from "formik";
 import { styles } from "./styles";
-import DatePicker from "react-native-datepicker";
+import { DatePickerInput } from "react-native-paper-dates";
 
 type Props = {
-    label: string,
-    valueName: string,
-    value: string | Date | moment.Moment | undefined,
-    handleChange: (text: string) => void,
+  label: string,
+  valueName: string,
+  value: Date,
+  handleChange: (date: Date | undefined) => void,
 }
 
 export default function CustomTextInput(props: Props) {
-    return (
-        <View style={styles.formGroup}>
-            <Text style={styles.label}>{props.label}</Text>
-
-            <DatePicker
-                style={styles.datePickerStyle}
-                date={props.value} //initial date from state
-                mode="date" 
-                placeholder="select date"
-                format="DD-MM-YYYY"
-                minDate="01-01-2016"
-                maxDate="01-01-2019"
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                customStyles={{
-                  dateIcon: {
-                    //display: 'none',
-                    position: 'absolute',
-                    left: 0,
-                    top: 4,
-                    marginLeft: 0,
-                  },
-                  dateInput: {
-                    marginLeft: 36,
-                  },
-                }}
-                onDateChange={props.handleChange}
-              />
-
-            <ErrorMessage name={props.valueName} />
-
-        </View>
-    )
+  return (
+    <View style={styles.formGroup}>
+      <Text style={styles.label}>{props.label}</Text>
+      <DatePickerInput
+        locale="en"
+        label="Date of birth"
+        value={props.value}
+        onChange={(d: Date | undefined) => props.handleChange(d)}
+        inputMode="start"
+      />
+      <ErrorMessage name={props.valueName} />
+    </View>
+  )
 }
 
 

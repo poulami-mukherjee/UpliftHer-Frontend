@@ -14,6 +14,11 @@ export default function RegisterForm() {
     console.log(values);
   }
 
+  function getStartDate() {
+    const today = new Date();
+    return new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+  }
+
   return (
     <>
       <SafeAreaView style={styles.topSafeArea} />
@@ -30,7 +35,7 @@ export default function RegisterForm() {
             email: "",
             password: "",
             confirmPassword: "",
-            dateOfBirth: ""
+            dateOfBirth: getStartDate()
           }}
           onSubmit={(values) => {
             onSubmitHandler(values);
@@ -40,6 +45,7 @@ export default function RegisterForm() {
           {({
             handleChange,
             values,
+            setFieldValue,
             handleSubmit,
             handleBlur,
           }) => (
@@ -65,7 +71,7 @@ export default function RegisterForm() {
               />
 
               <CustomDatePicker
-                handleChange={handleChange("dateOfBirth")}
+                handleChange={(e) => { setFieldValue("dateOfBirth", e); }}
                 label="Date of birth"
                 value={values.dateOfBirth}
                 valueName="dateOfBirth"
