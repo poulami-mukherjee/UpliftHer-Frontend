@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
-import CustomButton from "../../components/formComponents/CustomButton";
+import CustomButton from "../components/formComponents/CustomButton";
 
 const WelcomeScreen = () => {
   const navigation = useRouter();

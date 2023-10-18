@@ -6,15 +6,24 @@ import { validationSchema } from "./validation";
 import { styles } from "./styles";
 import CustomButton from "../../components/formComponents/CustomButton";
 import CustomTextInput from "../../components/formComponents/CustomTextInput";
-import PasswordForgotten from "../passwordForgotten";
-import ModalComponent from "../../components/ModalComponent";
-
+import { useAuth } from "../../services/authContext";
+import { useRouter } from "expo-router";
 
 export default function LoginPage() {
   const [pwdForgotten, setPwdForgotten] = useState(false);
+  const { signIn } = useAuth();
+  const navigation = useRouter();
 
-  function onSubmitHandler(values: any) {
+  async function onSubmitHandler(values: any) {
     console.log(values);
+    const logging = values as UserLogging;
+    const result = await signIn(logging.email, logging.password);
+console.log("result", result);
+    if (result.error) {
+      // TODO
+    } else {
+      navigation.push("/home");
+    }
   }
 
   return (
@@ -75,7 +84,7 @@ export default function LoginPage() {
           )}
         </Formik>
       </SafeAreaView>
-{/* For future developments:
+      {/* For future developments:
       <ModalComponent onClose={() => setPwdForgotten(false)} title="Password reset" show={pwdForgotten}>
         <PasswordForgotten />
       </ModalComponent> */}
