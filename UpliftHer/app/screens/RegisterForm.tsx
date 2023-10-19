@@ -2,7 +2,7 @@ import React from "react";
 import { SafeAreaView, View, Text } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Formik } from "formik";
-import { validationSchema } from "./validation";
+import { validationSchema } from "../register/validation";
 import { styles } from "./styles";
 import CustomButton from "../../components/formComponents/CustomButton";
 import CustomTextInput from "../../components/formComponents/CustomTextInput";

@@ -2,17 +2,18 @@ import React, { useState } from "react";
 import { SafeAreaView, View, Text, Pressable } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Formik } from "formik";
-import { validationSchema } from "./validation";
-import { styles } from "./styles";
+import { validationSchema } from "../login/validation";
+import { styles } from "../login/styles";
 import CustomButton from "../../components/formComponents/CustomButton";
 import CustomTextInput from "../../components/formComponents/CustomTextInput";
 import { useAuth } from "../../services/authContext";
-import { useRouter } from "expo-router";
+// import { useRouter } from "expo-router";
+import HomeScreen from "./HomeScreen";
 
-export default function LoginPage() {
+export default function LoginPage({navigation}: {navigation:any}) {
   const [pwdForgotten, setPwdForgotten] = useState(false);
   const { signIn } = useAuth();
-  const navigation = useRouter();
+  // const navigation = useRouter();
 
   async function onSubmitHandler(values: any) {
     console.log(values);
@@ -22,7 +23,7 @@ console.log("result", result);
     if (result.error) {
       // TODO
     } else {
-      navigation.push("/home");
+      navigation.navigate(HomeScreen);
     }
   }
 

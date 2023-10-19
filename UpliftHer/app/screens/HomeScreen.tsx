@@ -1,12 +1,12 @@
-import { useRouter } from "expo-router";
-import { StyleSheet, View } from "react-native";
+// import { useRouter } from "expo-router";
+import { StyleSheet, View, Text } from "react-native";
 
 const HomeScreen = () => {
-  const navigation = useRouter();
+  //const navigation = useRouter();
 
   return (
     <View style={styles.container}>
-      Home
+      <Text style={styles.subtitle}>How was your day today?</Text>
     </View>
   );
 };
@@ -22,11 +22,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 10,
+    color: '#147DB2'
   },
   subtitle: {
     fontSize: 16,
     textAlign: "center",
-  },
+  }
 });
 
 export default HomeScreen;
