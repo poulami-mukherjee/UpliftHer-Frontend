@@ -1,6 +1,7 @@
 const tintColorLight = '#2f95dc';
 const tintColorDark = '#fff';
-export const headerBackground = "#3498db";
+export const mainColor = "#3498db";
+export const headerBackground = mainColor;
 export const contentBackground = "#f9f9f9";
 
 export default {

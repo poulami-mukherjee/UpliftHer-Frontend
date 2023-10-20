@@ -1,17 +1,16 @@
+import React, { useEffect } from "react";
+import { StyleSheet, SafeAreaView, View, Text } from "react-native";
 import { useRouter } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
-import CustomButton from "../components/formComponents/CustomButton";
+import Colors, { contentBackground, headerBackground, mainColor } from "../constants/Colors";
 
 const WelcomeScreen = () => {
   const navigation = useRouter();
 
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>UpliftHer</Text>
-      <Text style={styles.subtitle}>Welcome</Text>
-      <CustomButton onPress={(e) => navigation.push("/login")} text="LOG IN" />
-      <CustomButton type="link" onPress={(e) => navigation.push("/register")} text="Don't have an account? Click here to register" />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <passage-auth app-id={process.env.REACT_APP_PASSAGE_APP_ID}></passage-auth>
+    </SafeAreaView>
   );
 };
 
@@ -20,7 +19,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#fff",
+    backgroundColor: mainColor,
   },
   title: {
     fontSize: 24,
@@ -31,6 +30,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
   },
+  topSafeArea: {
+    backgroundColor: headerBackground,
+  },
+  header: {
+    height: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: headerBackground,
+  },
+  headerText: {
+    color: "#fff",
+    fontSize: 18,
+  },
+  content: {
+    padding: 20,
+    backgroundColor: contentBackground,
+  },
 });
+
 
 export default WelcomeScreen;

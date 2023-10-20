@@ -3,7 +3,7 @@ import { useFonts } from 'expo-font';
 import { Slot, SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { en, registerTranslation } from 'react-native-paper-dates'
-import { Provider } from '../services/authContext';
+import '@passageidentity/passage-elements/passage-auth';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -41,9 +41,5 @@ export default function RootLayout() {
     return null;
   }
 
-  return (
-    <Provider>
-      <Slot />
-    </Provider>
-  );
+  return <Slot />;
 }
