@@ -6,7 +6,7 @@ const GroupScreen = () => {
 
   return (
     <View style={styles.container}>
-      Group
+      
     </View>
   );
 };

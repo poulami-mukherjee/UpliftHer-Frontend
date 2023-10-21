@@ -40,12 +40,14 @@ function RootLayoutNav() {
                 tabBarIcon: ({ focused, color, size }) => {
                     if (route.name === 'home') return TabBarIcon({ name: 'home', color: color })
                     else if (route.name === 'group') return TabBarIcon({ name: 'group', color: color })
+                    else if (route.name === 'profile') return TabBarIcon({ name: 'user', color: color })
                 },
                 tabBarShowLabel: false,
             })}
         >
             <Tabs.Screen name="home" />
             <Tabs.Screen name="group" />
+            <Tabs.Screen name="profile" />
         </Tabs>;
 
     console.log("starting ", username);

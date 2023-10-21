@@ -3,7 +3,7 @@ import { styles } from "./styles";
 
 type Props = {
     text: string,
-    type?: "primary" | "transparent" | "link";
+    type?: "primary" | "transparent" | "link" | "dark" | "danger";
     onPress: (event: GestureResponderEvent) => void
 }
 
@@ -16,6 +16,12 @@ export default function CustomButton(props: Props) {
                 break;
             case "link":
                 style = styles.buttonLink;
+                break;
+            case "dark":
+                style = styles.buttonDark;
+                break;
+            case "danger":
+                style = styles.buttonDanger;
                 break;
             default:
                 break;
@@ -32,6 +38,12 @@ export default function CustomButton(props: Props) {
                 break;
             case "link":
                 style = styles.buttonTextLink;
+                break;
+            case "dark":
+                style = styles.buttonTextDark;
+                break;
+            case "danger":
+                style = styles.buttonTextDanger;
                 break;
             default:
                 break;

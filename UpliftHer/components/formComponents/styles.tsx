@@ -38,6 +38,12 @@ export const styles = StyleSheet.create({
         paddingBottom: 2,
         marginTop: 4
     },
+    buttonDark: {
+        backgroundColor: "#000",
+    },
+    buttonDanger: {
+        backgroundColor: "#ed4236",
+    },
     buttonText: {
         fontWeight: "bold",
         fontSize: 18,
@@ -54,4 +60,10 @@ export const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: "normal"
     },
+    buttonTextDark: {
+        color: "#fff",
+    },
+    buttonTextDanger: {
+        color: "#fff",
+    }
 });
