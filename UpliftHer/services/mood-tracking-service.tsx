@@ -1,9 +1,14 @@
-import IMood from "./models/IMood";
+import BaseService from "./base-service";
+import IMood from "./interfaces/IMood";
+import MoodUpdate from "./models/MoodUpdate";
 
-class MoodTrackingService {
-    async sendMoodsAsync(selectedMoods: string[]) {
+class MoodTrackingService extends BaseService {
+    async sendMoodsAsync(selectedMoods: string[], notes: string) {
+        var model = new MoodUpdate();
+        model.moodSelection = selectedMoods;
+        model.notes = notes;
         console.log("saving selected moods");
-        return Promise.resolve(true);
+        return await this.post("mood-entries", model);
     }
     
     getMoods(): IMood[] {
@@ -15,7 +20,7 @@ class MoodTrackingService {
             { icon: "emoticon-cry-outline", text: "Very Sad", color: "darkorange" },
             { icon: "emoticon-angry-outline", text: "Angry", color: "red" },
             { icon: "emoticon-confused-outline", text: "Ashamed", color: "purple" },
-            { icon: "emoticon-frown-outline", text: "Anxious", color: "darkgray" },
+            { icon: "emoticon-frown-outline", text: "Anxious", color: "brown" },
         ];
     }
 

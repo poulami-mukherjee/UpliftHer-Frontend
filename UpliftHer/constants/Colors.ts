@@ -5,6 +5,13 @@ export const secondaryColor = "rgb(255, 140, 0)";
 export const headerBackground = mainColor;
 export const contentBackground = "#f9f9f9";
 
+export const AlertColor = {
+  success: '#28a745', // Green color for success messages
+  error: '#dc3545',   // Red color for error messages
+  warning: '#ffc107', // Yellow color for warning messages
+  info: '#17a2b8',    // Blue color for informational messages
+};
+
 export default {
   light: {
     text: '#000',

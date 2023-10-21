@@ -1,15 +1,18 @@
-import { ScrollView } from 'react-native-gesture-handler';
 import { Icon } from 'react-native-paper';
-import { FlatList, TouchableOpacity, View, Text, StyleSheet, Platform } from 'react-native';
-import IMood from '../services/models/IMood';
-import { useContext, useEffect, useState } from 'react';
+import { FlatList, TouchableOpacity, View, Text, StyleSheet, Platform, ScrollView } from 'react-native';
+import IMood from '../services/interfaces/IMood';
+import { useEffect, useState } from 'react';
 import { MoodTrackingApi } from '../services/mood-tracking-service';
 import { contentBackground, headerBackground, secondaryColor } from '../constants/Colors';
 import CustomButton from './formComponents/CustomButton';
 import { Snack } from './CustomSnackbar';
 import processRequest from '../helpers/processRequest';
-import { SnackbarContext } from '../app/(home)/home';
-
+import CustomTextInput from './formComponents/CustomTextInput';
+import { Formik } from 'formik';
+import * as Yup from "yup";
+import * as Device from 'expo-device';
+import { AlertColor } from '../constants/Colors';
+import { useSnackbarContext } from '../services/contexts/snackbarContext';
 
 type ItemProps = {
   item: IMood;
@@ -34,17 +37,25 @@ export default function MoodTracker({ onClose }: MoodTrackerProps) {
   const [moods, setMoods] = useState<IMood[]>([]);
   const [selectedMoods, setSelectedMoods] = useState<string[]>([]);
   const [updateVersion, setUpdateVersion] = useState(0);
-  const loading = false;
-  const { snack, setSnack } = useContext(SnackbarContext);
+  const [device, setDevice] = useState<Device.DeviceType | null>(null);
+  let loading = false;
+  const { snack, setSnack } = useSnackbarContext();
 
   useEffect(() => {
-    const moods = MoodTrackingApi.getMoods();
-    setMoods(moods);
+    const fetchData = async () => {
+      const device = await Device.getDeviceTypeAsync();
+      console.log(device);
+
+      const moods = MoodTrackingApi.getMoods();
+      setMoods(moods);
+      setDevice(device);
+    }
+
+    fetchData().catch(console.error);
   }, []);
 
 
   function handleClick(text: string): void {
-    console.log(text);
     let userMoods = selectedMoods;
     if (userMoods.includes(text)) {
       userMoods = userMoods.filter(um => um !== text);
@@ -54,7 +65,6 @@ export default function MoodTracker({ onClose }: MoodTrackerProps) {
 
     setSelectedMoods(userMoods);
     setUpdateVersion(updateVersion + 1);
-    console.log(selectedMoods);
   }
 
   const item = ({ item }: { item: IMood }) => {
@@ -79,52 +89,86 @@ export default function MoodTracker({ onClose }: MoodTrackerProps) {
     <Text style={styles.modalTitleSubText}>Select all that applies.</Text>
   </View>;
 
-  const validate = async () => {
-    console.log("sending ", selectedMoods.length);
+  const validate = async (notes: string) => {
     if (selectedMoods.length === 0) {
+      setSnack(new Snack({ color: AlertColor.error, message: 'Please select at least one mood.', open: true }));
       return;
     }
+
+    setSnack(new Snack({ open: false }));
 
     console.log("processing ");
     await processRequest({
       loading: loading,
-      request: () => MoodTrackingApi.sendMoodsAsync(selectedMoods),
-      onSuccess: function (data: boolean): void {
-        console.log("success");
-        setSnack(new Snack({message: 'Moods saved!', open: true}));
+      request: async () => await MoodTrackingApi.sendMoodsAsync(selectedMoods, notes),
+      onSuccess: function (data: unknown): void {
+        setSnack(new Snack({ color: AlertColor.success, message: 'Moods saved!', open: true }));
         onClose();
       },
       onError: function (error: string): void {
-        console.log("error ", error);
-        setSnack(new Snack({message: error, open: true}));
-
+        setSnack(new Snack({ color: AlertColor.error, message: error, open: true }));
       }
     });
   };
 
-  const footer = <View style={styles.modalFooter}>
-    <CustomButton type='dark' onPress={() => validate()} text={'Validate'} />
-  </View>;
 
   return (
     <ScrollView style={styles.container}>
       {header}
       <View style={styles.app}>
-        <FlatList extraData={updateVersion}
-          data={moods}
-          numColumns={4}
-          renderItem={item}
-          keyExtractor={item => item.text}
-        />
+        {device &&
+          <FlatList extraData={updateVersion}
+            data={moods}
+            numColumns={device === Device.DeviceType.DESKTOP ? 4 : 2}
+            renderItem={item}
+            keyExtractor={item => item.text}
+          />
+        }
+
+        {/* https://formik.org/docs/overview */}
+        <Formik
+          initialValues={{
+            notes: "",
+          }}
+          onSubmit={(values) => {
+            validate(values.notes);
+          }}
+          validationSchema={validationSchema}
+        >
+          {({
+            handleChange,
+            values,
+            handleSubmit,
+            handleBlur,
+          }) => (
+            <View style={{ padding: 15 }}>
+              <CustomTextInput
+                labelStyle={styles.inputLabel}
+                label="Is there a specific event that triggered these emotions?"
+                valueName="notes"
+                handleChange={handleChange("notes")}
+                handleBlur={handleBlur("notes")}
+                value={values.notes} />
+              <CustomButton onPress={(e) => handleSubmit()} text="SUBMIT" />
+            </View>
+          )}
+        </Formik>
       </View>
-      {footer}
     </ScrollView>
   );
 }
 
+
+// https://github.com/jquense/yup
+export const validationSchema = Yup.object().shape({
+  notes: Yup.string().max(200),
+});
+
+
 export const styles = StyleSheet.create({
   container: {
-    maxWidth: 700,
+    width: "100%",
+    height: "100%",
     flex: 1,
     backgroundColor:
       Platform.OS === "ios" ? contentBackground : headerBackground,
@@ -132,7 +176,6 @@ export const styles = StyleSheet.create({
   app: {
     marginHorizontal: "auto",
     marginVertical: 25,
-    maxWidth: 700
   },
   title: {
     fontSize: 16,
@@ -164,4 +207,9 @@ export const styles = StyleSheet.create({
   },
   modalTitleSubText: {
   },
+  inputLabel: {
+    padding: 5,
+    color: "#0f0e0e"
+  }
 });
+

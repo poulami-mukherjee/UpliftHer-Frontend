@@ -1,15 +1,11 @@
-import React, { useEffect } from "react";
-import { StyleSheet, SafeAreaView, View, Text } from "react-native";
-import { useRouter } from "expo-router";
-import Colors, { contentBackground, headerBackground, mainColor } from "../constants/Colors";
+import React from "react";
+import { StyleSheet, SafeAreaView } from "react-native";
+import { contentBackground, headerBackground, mainColor } from "../constants/Colors";
 
 const WelcomeScreen = () => {
-  const navigation = useRouter();
-
-
   return (
     <SafeAreaView style={styles.container}>
-      <passage-auth app-id={process.env.REACT_APP_PASSAGE_APP_ID}></passage-auth>
+      <passage-auth app-id={process.env.REACT_APP_PASSAGE_APP_ID?.replace("\"", "").replace(";", "")}></passage-auth>
     </SafeAreaView>
   );
 };

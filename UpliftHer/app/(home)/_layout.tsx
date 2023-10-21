@@ -1,5 +1,5 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Redirect, Tabs, useRouter } from 'expo-router';
+import { Tabs, useRouter } from 'expo-router';
 import { useColorScheme } from 'react-native';
 import React from 'react';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';

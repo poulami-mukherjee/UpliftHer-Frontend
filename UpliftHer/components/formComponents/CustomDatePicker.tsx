@@ -10,7 +10,7 @@ type Props = {
   handleChange: (date: Date | undefined) => void,
 }
 
-export default function CustomTextInput(props: Props) {
+export default function CustomDateInput(props: Props) {
   return (
     <View style={styles.formGroup}>
       <Text style={styles.label}>{props.label}</Text>
