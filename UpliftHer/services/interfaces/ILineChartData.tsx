@@ -4,3 +4,10 @@ interface ILineChartData {
     datasets: ILineChartDataSet[];
     legend: string[];
 }
+
+interface IBarChartData {
+    labels: string[];
+    data: number[][];
+    legend: string[];
+    barColors: string[];
+}

@@ -97,7 +97,6 @@ export default function MoodTracker({ onClose }: MoodTrackerProps) {
 
     setSnack(new Snack({ open: false }));
 
-    console.log("processing ");
     await processRequest({
       loading: setIsLoading,
       request: async () => await MoodTrackingApi.sendMoodsAsync(selectedMoods, notes),
@@ -115,7 +114,7 @@ export default function MoodTracker({ onClose }: MoodTrackerProps) {
   return (
     <ScrollView style={styles.container}>
       {header}
-      <View style={styles.app}>
+      <View style={[styles.app, {width: (device === Device.DeviceType.DESKTOP ? "50%" : "100%" )}]}>
         <View style={{ paddingBottom: 25 }}>
           {device &&
             <FlatList extraData={updateVersion}
@@ -135,7 +134,7 @@ export default function MoodTracker({ onClose }: MoodTrackerProps) {
           onSubmit={(values) => {
             validate(values.notes);
           }}
-          validationSchema={validationSchema}
+          validationSchema={validationSchema}          
         >
           {({
             handleChange,

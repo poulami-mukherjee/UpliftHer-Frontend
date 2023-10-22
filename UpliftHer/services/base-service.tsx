@@ -65,10 +65,12 @@ class BaseService {
         };
 
         const user = new PassageUser();
-        const token = await user.getAuthToken();
-        console.log("TOKEN ", token);
-        if (token) {
-            headers['Authorization'] = `Bearer ${token}`;
+        if (user) {
+            const token = await user.getAuthToken();
+            console.log("TOKEN ", token);
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
         }
 
         return headers;

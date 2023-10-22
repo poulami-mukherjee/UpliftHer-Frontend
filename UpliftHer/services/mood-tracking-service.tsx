@@ -22,7 +22,7 @@ class MoodTrackingService extends BaseService {
             { icon: "emoticon-cry-outline", text: "Very Sad", color: "darkorange" },
             { icon: "emoticon-confused-outline", text: "Ashamed", color: "#f52d2d" },
             { icon: "emoticon-angry-outline", text: "Angry", color: "red" },
-            { icon: "emoticon-frown-outline", text: "Anxious", color: "darkred" },
+            { icon: "emoticon-frown-outline", text: "Anxious", color: "#8b0000" },
         ];
     }
 

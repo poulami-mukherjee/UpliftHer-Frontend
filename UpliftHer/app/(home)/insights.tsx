@@ -1,5 +1,5 @@
 import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
-import { LineChart, PieChart, } from "react-native-chart-kit";
+import { PieChart, StackedBarChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
 import { Button, Icon } from "react-native-paper";
 import { useEffect, useState } from "react";
@@ -15,20 +15,25 @@ const screenWidth = Dimensions.get("window").width;
 
 const chartConfig = {
   backgroundColor: "#ffc67315",
-  backgroundGradientFrom: secondaryColor,
+  backgroundGradientFrom: "#ffc673",
   backgroundGradientTo: "#ffc673",
   useShadowColorFromDataset: false,
-  color: () => "#ffc673",
+  color: () => "#00000050",
   labelColor: (opacity = 1) => "#000",
   style: {
     borderRadius: 16,
   },
+  barPercentage: 1,
+  decimalPlaces: 0,
+  propsForBackgroundLines: {
+    stroke: 0,
+  }
 };
 
 const InsightsScreen = () => {
-  const [interval, setInterval] = useState<"week" | "month">("week");
+  const [interval, setInterval] = useState<"week" | "month" | "year">("month");
   const [pieChartData, setPieChartData] = useState<IPieChartData[]>([]);
-  const [lineChartData, setLineChartData] = useState<ILineChartData>({ datasets: [], legend: [], labels: [] });
+  const [barChartData, setBarChartData] = useState<IBarChartData>({ data: [], legend: [], labels: [], barColors: ["#dfe4ea", "#ced6e0", "#a4b0be"] });
   const [isLoading, setIsLoading] = useState(false);
 
   const getInterval: () => { from: Date, to: Date } = () => {
@@ -60,7 +65,7 @@ const InsightsScreen = () => {
     setPieChartData(pieChartData);
   }
 
-  function prepareAndSetLineChartData(moods: IMood[], apiMoods: IMoodEntry[], dateRange: { from: Date, to: Date }) {
+  function prepareAndSetBarChartData(moods: IMood[], apiMoods: IMoodEntry[], dateRange: { from: Date, to: Date }) {
     const labels: string[] = [];
 
     let currentDate = moment(dateRange.from);
@@ -70,33 +75,32 @@ const InsightsScreen = () => {
       currentDate = moment(currentDate).add((interval === "week" ? 1 : 7), 'days');
     }
 
-    const moodsGroup = MoodTrackingApi.getMoods().filter(m => m.text === "Happy" || m.text === "Very Sad" || m.text === "Anxious");
     // Calc count of each different moods for every day in the interval
-    const dataSets: ILineChartDataSet[] = moodsGroup.map(m => {
-      const dataSetValues: number[] = [];
-      for (let i = 0; i < labels.length; i++) {
-        const date1 = moment(labels[i], "DD/MM/YYYY");
-        const date2 = i < labels.length - 1 ? moment(labels[i + 1], "DD/MM/YYYY") : moment(dateRange.to);
-        const data = apiMoods.filter(val => moment(val.date, "YYYY-MM-DD").isBetween(date1, date2) && val.moodSelection.includes(m.text)).length;
-        console.log(m.text, data);
-        dataSetValues.push(data);
-      }
-      console.log(m.text, dataSetValues);
+    const data: number[][] = [];
+    console.log(labels.length);
 
-      return {
-        data: dataSetValues,
-        color: () => m.color,
-        strokeWidth: 2
-      };
-    });
+    const groupedMoods = moods.filter(m => m.text !== "Excited" && m.text !== "Very Sad");
+    for (let i = 0; i < labels.length; i++) {
+      const date1 = moment(labels[i], "DD/MM/YYYY");
+      const date2 = i < labels.length - 1 ? moment(labels[i + 1], "DD/MM/YYYY") : moment(dateRange.to);
 
-    const lineChartData = {
+      data.push(groupedMoods.map(m => {
+        const filterMoods = [m.text];
+        if (m.text === "Happy") { filterMoods.push("Excited"); }
+        else if (m.text === "Very Sad") { filterMoods.push("Sad"); }
+        return apiMoods.filter(val => moment(val.date, "YYYY-MM-DD").isBetween(date1, date2, undefined, "[)") && val.moodSelection.some(x => filterMoods.includes(x))).length;
+      }));
+
+    }
+
+    const barChartData = {
       labels: labels,
-      datasets: dataSets,
-      legend: moodsGroup.map(m => m.text)
+      data: data,
+      legend: groupedMoods.map(m => m.text),
+      barColors: groupedMoods.map(m => m.color)
     };
 
-    setLineChartData(lineChartData);
+    setBarChartData(barChartData);
   }
 
   useEffect(() => {
@@ -116,8 +120,8 @@ const InsightsScreen = () => {
       });
 
       const moods = MoodTrackingApi.getMoods();
-      prepareAndSetLineChartData(moods, apiMoods, dateRange);
       prepareAndSetPieChartData(moods, apiMoods);
+      prepareAndSetBarChartData(moods, apiMoods, dateRange);
     }
 
     fetchData().catch(console.error);
@@ -147,15 +151,7 @@ const InsightsScreen = () => {
 
                 <ActivityIndicator animating={isLoading} />
               </View>
-
-              {lineChartData.datasets.length > 0 &&
-                <LineChart
-                  data={lineChartData}
-                  width={screenWidth}
-                  height={250}
-                  chartConfig={chartConfig}
-                />
-              }
+              
               <PieChart
                 data={pieChartData}
                 width={screenWidth}
@@ -167,6 +163,19 @@ const InsightsScreen = () => {
                 center={[10, 10]}
                 absolute
               />
+
+              {barChartData.data.length > 0 &&
+                <StackedBarChart
+                  hideLegend={false}
+                  yAxisInterval={1}
+                  style={{}}
+                  withHorizontalLabels={false}
+                  data={barChartData}
+                  width={screenWidth}
+                  height={500}
+                  chartConfig={chartConfig}
+                />
+              }
             </>
         }
 

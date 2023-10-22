@@ -10,12 +10,12 @@ export function useCurrentUser() {
 
     useEffect(() => {
         let cancelRequest = false;
-        new PassageUser().userInfo().then(userInfo=> {
-            if( cancelRequest ) {
+        new PassageUser().userInfo().then(userInfo => {
+            if (cancelRequest) {
                 return;
             }
 
-            if(userInfo === undefined){
+            if (userInfo === undefined) {
                 setResult({
                     isLoading: false,
                     isAuthorized: false,
