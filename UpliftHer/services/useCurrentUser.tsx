@@ -10,29 +10,39 @@ export function useCurrentUser() {
 
     useEffect(() => {
         let cancelRequest = false;
-        new PassageUser().userInfo().then(userInfo => {
-            if (cancelRequest) {
-                return;
-            }
+        try {
+            new PassageUser().userInfo().then(userInfo => {
+                if (cancelRequest) {
+                    return;
+                }
 
-            if (userInfo === undefined) {
+                if (userInfo === undefined) {
+                    setResult({
+                        isLoading: false,
+                        isAuthorized: false,
+                        username: "",
+                    });
+                    return;
+                }
                 setResult({
                     isLoading: false,
-                    isAuthorized: false,
-                    username: "",
+                    isAuthorized: true,
+                    username: userInfo.email
+                    ,
                 });
-                return;
-            }
+            });
+            return () => {
+                cancelRequest = true;
+            };
+        }
+        finally {
             setResult({
                 isLoading: false,
-                isAuthorized: true,
-                username: userInfo.email
-                ,
+                isAuthorized: false,
+                username: "",
             });
-        });
-        return () => {
-            cancelRequest = true;
-        };
+            return;
+        }
     }, []);
     return result;
 }
