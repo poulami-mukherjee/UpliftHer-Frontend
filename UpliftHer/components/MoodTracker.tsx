@@ -38,7 +38,7 @@ export default function MoodTracker({ onClose }: MoodTrackerProps) {
   const [selectedMoods, setSelectedMoods] = useState<string[]>([]);
   const [updateVersion, setUpdateVersion] = useState(0);
   const [device, setDevice] = useState<Device.DeviceType | null>(null);
-  let loading = false;
+  const [loading, setIsLoading] = useState(false);
   const { snack, setSnack } = useSnackbarContext();
 
   useEffect(() => {
@@ -99,7 +99,7 @@ export default function MoodTracker({ onClose }: MoodTrackerProps) {
 
     console.log("processing ");
     await processRequest({
-      loading: loading,
+      loading: setIsLoading,
       request: async () => await MoodTrackingApi.sendMoodsAsync(selectedMoods, notes),
       onSuccess: function (data: unknown): void {
         setSnack(new Snack({ color: AlertColor.success, message: 'Moods saved!', open: true }));
@@ -116,14 +116,16 @@ export default function MoodTracker({ onClose }: MoodTrackerProps) {
     <ScrollView style={styles.container}>
       {header}
       <View style={styles.app}>
-        {device &&
-          <FlatList extraData={updateVersion}
-            data={moods}
-            numColumns={device === Device.DeviceType.DESKTOP ? 4 : 2}
-            renderItem={item}
-            keyExtractor={item => item.text}
-          />
-        }
+        <View style={{ paddingBottom: 25 }}>
+          {device &&
+            <FlatList extraData={updateVersion}
+              data={moods}
+              numColumns={device === Device.DeviceType.DESKTOP ? 4 : 2}
+              renderItem={item}
+              keyExtractor={item => item.text}
+            />
+          }
+        </View>
 
         {/* https://formik.org/docs/overview */}
         <Formik
@@ -141,15 +143,21 @@ export default function MoodTracker({ onClose }: MoodTrackerProps) {
             handleSubmit,
             handleBlur,
           }) => (
-            <View style={{ padding: 15 }}>
+            <View style={{ padding: 15, backgroundColor: "#c5cdd361" }}>
               <CustomTextInput
                 labelStyle={styles.inputLabel}
-                label="Is there a specific event that triggered these emotions?"
+                label="Is there a specific event that triggered these emotions? *"
                 valueName="notes"
                 handleChange={handleChange("notes")}
                 handleBlur={handleBlur("notes")}
                 value={values.notes} />
-              <CustomButton onPress={(e) => handleSubmit()} text="SUBMIT" />
+
+              <Text>
+                * Please don't enter sensitive information in this text box, as it may be processed by machine learning
+                algorithms to provide you with personalized resources.
+                Rest assured, other secure features of this app will be available for you to enter sensitive information confidently and securely.
+              </Text>
+              <CustomButton loading={loading} onPress={(e) => handleSubmit()} text="SUBMIT" />
             </View>
           )}
         </Formik>

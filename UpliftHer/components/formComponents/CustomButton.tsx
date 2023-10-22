@@ -1,8 +1,10 @@
 import { GestureResponderEvent, Text, Pressable } from "react-native";
 import { styles } from "./styles";
+import { ActivityIndicator } from "react-native-paper";
 
 type Props = {
     text: string,
+    loading?: boolean;
     type?: "primary" | "transparent" | "link" | "dark" | "danger";
     onPress: (event: GestureResponderEvent) => void
 }
@@ -54,6 +56,7 @@ export default function CustomButton(props: Props) {
 
     return (
         <Pressable style={[styles.button, getStyle()]} onPress={(e) => props.onPress(e)}>
+            <ActivityIndicator style={{ marginRight: 5 }} animating={props.loading ?? false} />
             <Text style={[styles.buttonText, getTextStyle()]}>{props.text}</Text>
         </Pressable>
     )

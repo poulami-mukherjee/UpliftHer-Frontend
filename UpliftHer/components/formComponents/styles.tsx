@@ -18,13 +18,13 @@ export const styles = StyleSheet.create({
         lineHeight: 30,
     },
     datePickerStyle: {
-      width: 200,
-      marginTop: 20,
+        width: 200,
+        marginTop: 20,
     },
     button: {
         marginTop: 20,
         padding: 15,
-        borderRadius: 15,
+        borderRadius: 15, display: "flex", flexDirection: "row", justifyContent: "center"
     },
     buttonPrimary: {
         backgroundColor: "#2980b9",

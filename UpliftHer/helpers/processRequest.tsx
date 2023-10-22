@@ -1,14 +1,14 @@
 import { IResponse } from "../services/interfaces/IResponse";
 
 type Props<T> = {
-    loading: boolean,
+    loading: React.Dispatch<React.SetStateAction<boolean>>,
     request: () => Promise<T>,
     onSuccess: (data: T | null) => void,
     onError: (error: string) => void
 };
 
 export default async function processRequest<T>(props: Props<T>) {
-    props.loading = true;
+    props.loading(true);
     try {
         const result = await props.request() as IResponse<T>;
         console.log("result ", result);
@@ -30,6 +30,6 @@ export default async function processRequest<T>(props: Props<T>) {
         props.onError(message);
     }
     finally {
-        props.loading = false;
+        props.loading(false);
     }
 }
